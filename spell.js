@@ -1,9 +1,10 @@
 class Spell {
-  constructor(sx, sy, tx, ty, type) {
+  constructor(sx, sy, tx, ty, type, target = null) {
     this.x = sx;
     this.y = sy;
     this.type = type;
     this.active = true;
+    this.target = target; // 記錄追蹤目標
     this.r = 40; // 玩家子彈判定加大
 
     let angle = atan2(ty - sy, tx - sx);
@@ -18,6 +19,20 @@ class Spell {
   }
 
   update() {
+    // 火球追蹤邏輯 (只有 FIRE 類型且有目標時觸發)
+    if (this.type === 'FIRE' && this.target) {
+      // 檢查目標是否仍然有效 (Enemy 使用 active, Boss 使用 hp > 0)
+      let isTargetAlive = (this.target.active !== false) && (this.target.hp > 0);
+      
+      if (isTargetAlive) {
+        // 計算朝向目標的新角度
+        let angle = atan2(this.target.y - this.y, this.target.x - this.x);
+        let speed = 8; // 保持原本設定的火球速度
+        this.vx = cos(angle) * speed;
+        this.vy = sin(angle) * speed;
+      }
+    }
+
     this.x += this.vx;
     this.y += this.vy;
     

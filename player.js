@@ -5,6 +5,7 @@ class Player {
     this.r = 50;
     this.targetX = width / 2;
     this.targetY = height / 2;
+    this.lockedTarget = null; // 新增：目前鎖定的目標
     this.reset();
   }
 
@@ -14,6 +15,7 @@ class Player {
     this.combo = 0;
     this.targetX = width / 2;
     this.targetY = height / 2;
+    this.lockedTarget = null;
     this.lastKillTime = 0;
     this.lightningCooldown = 0;
   }

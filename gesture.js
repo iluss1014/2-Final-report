@@ -10,15 +10,35 @@ const Gesture = {
       let pinkyUp = landmarks[20].y < landmarks[18].y;
 
       // 目標座標映射
-      let tx = map(landmarks[8].x, 0, CONFIG.VIDEO_W, width, 0); // 反轉 X 以對應鏡像畫面
-      let ty = map(landmarks[8].y, 0, CONFIG.VIDEO_H, 0, height);
+      let rawTx = map(landmarks[8].x, 0, CONFIG.VIDEO_W, 0, width);
+      let rawTy = map(landmarks[8].y, 0, CONFIG.VIDEO_H, 0, height);
+
+      // --- 自動鎖定邏輯 ---
+      let closest = null;
+      let minDist = 80; // 鎖定靈敏度（半徑 80 像素內自動吸附）
+
+      // 檢查一般小怪
+      for (let e of enemies) {
+        let d = dist(rawTx, rawTy, e.x, e.y);
+        if (d < minDist) { minDist = d; closest = e; }
+      }
+      // 檢查 Boss
+      if (boss && !boss.isDead()) {
+        let d = dist(rawTx, rawTy, boss.x, boss.y);
+        if (d < minDist) { minDist = d; closest = boss; }
+      }
+
+      let tx = closest ? closest.x : rawTx;
+      let ty = closest ? closest.y : rawTy;
+      player.lockedTarget = closest;
       player.targetX = tx;
       player.targetY = ty;
 
       // 1. 食指 Pointing -> 火球
       if (indexUp && !middleUp && !ringUp && !pinkyUp) {
         if (player.mp >= 5 && frameCount % 30 === 0) {
-          spells.push(new Spell(player.x, player.y, tx, ty, 'FIRE'));
+          // 發射火球時傳入目前鎖定的目標
+          spells.push(new Spell(player.x, player.y, tx, ty, 'FIRE', player.lockedTarget));
           player.mp -= 5;
         }
       }
