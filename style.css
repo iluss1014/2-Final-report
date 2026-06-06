@@ -1,0 +1,14 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: #1a1a1a;
+  overflow: hidden;
+}
+canvas {
+  display: block;
+  margin: 0 auto;
+}
+#p5_loading {
+  color: white;
+  text-align: center;
+}
