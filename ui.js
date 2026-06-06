@@ -61,14 +61,24 @@ const UI = {
     text("遠古魔龍 ANCIENT DRAGON", width/2, 48);
   },
 
-  drawCrosshair: (x, y) => {
+  drawCrosshair: (player) => {
+    let x = player.targetX;
+    let y = player.targetY;
+
     push();
     noFill();
-    stroke(0, 255, 0, 150); // 綠色半透明
-    strokeWeight(2);
-    ellipse(x, y, 30);
-    line(x - 20, y, x + 20, y);
-    line(x, y - 20, x, y + 20);
+    strokeWeight(3); // 增加粗細使其更明顯
+
+    // 判定 MP 是否不足 (低於最基本的火球術消耗 5MP)
+    if (player.mp < 5) {
+      stroke(255, 0, 0, 255); // 警告紅色
+    } else {
+      stroke(0, 255, 0, 200); // 正常綠色
+    }
+
+    ellipse(x, y, 40); // 稍微加大準心
+    line(x - 25, y, x + 25, y);
+    line(x, y - 25, x, y + 25);
     pop();
   }
 };

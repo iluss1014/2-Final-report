@@ -10,7 +10,7 @@ const Gesture = {
       let pinkyUp = landmarks[20].y < landmarks[18].y;
 
       // 目標座標映射
-      let tx = map(landmarks[8].x, 0, CONFIG.VIDEO_W, 0, width);
+      let tx = map(landmarks[8].x, 0, CONFIG.VIDEO_W, width, 0); // 反轉 X 以對應鏡像畫面
       let ty = map(landmarks[8].y, 0, CONFIG.VIDEO_H, 0, height);
       player.targetX = tx;
       player.targetY = ty;

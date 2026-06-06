@@ -61,11 +61,11 @@ function runGame() {
   player.update();
   player.display();
 
-  // 繪製瞄準準心
-  UI.drawCrosshair(player.targetX, player.targetY);
-
   // 手勢辨識與施法
   Gesture.analyze(hands, player, spells);
+
+  // 繪製瞄準準心 (傳入 player 物件以判斷 MP 狀態)
+  UI.drawCrosshair(player);
 
   // Boss 出現判定
   if (gameState === 'PLAYING' && millis() - gameStartTime > CONFIG.BOSS_TIME) {
