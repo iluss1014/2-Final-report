@@ -13,7 +13,7 @@ class Spell {
     this.vx = cos(angle) * speed;
     this.vy = sin(angle) * speed;
     
-    this.damage = (type === 'FIRE') ? 20 : (type === 'ICE' ? 15 : 0);
+    this.damage = (type === 'FIRE') ? 40 : (type === 'ICE' ? 30 : 0);
     if (type === 'BOSS_FIRE') this.damage = 15;
   }
 

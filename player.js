@@ -3,6 +3,8 @@ class Player {
     this.x = width / 2;
     this.y = height / 2;
     this.r = 50;
+    this.targetX = width / 2;
+    this.targetY = height / 2;
     this.reset();
   }
 
@@ -10,6 +12,8 @@ class Player {
     this.hp = 100;
     this.mp = 100;
     this.combo = 0;
+    this.targetX = width / 2;
+    this.targetY = height / 2;
     this.lastKillTime = 0;
     this.lightningCooldown = 0;
   }

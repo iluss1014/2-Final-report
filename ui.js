@@ -59,5 +59,16 @@ const UI = {
     fill(255);
     textSize(14);
     text("遠古魔龍 ANCIENT DRAGON", width/2, 48);
+  },
+
+  drawCrosshair: (x, y) => {
+    push();
+    noFill();
+    stroke(0, 255, 0, 150); // 綠色半透明
+    strokeWeight(2);
+    ellipse(x, y, 30);
+    line(x - 20, y, x + 20, y);
+    line(x, y - 20, x, y + 20);
+    pop();
   }
 };

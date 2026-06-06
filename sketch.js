@@ -61,6 +61,9 @@ function runGame() {
   player.update();
   player.display();
 
+  // 繪製瞄準準心
+  UI.drawCrosshair(player.targetX, player.targetY);
+
   // 手勢辨識與施法
   Gesture.analyze(hands, player, spells);
 

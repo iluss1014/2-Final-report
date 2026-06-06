@@ -12,6 +12,8 @@ const Gesture = {
       // 目標座標映射
       let tx = map(landmarks[8].x, 0, CONFIG.VIDEO_W, 0, width);
       let ty = map(landmarks[8].y, 0, CONFIG.VIDEO_H, 0, height);
+      player.targetX = tx;
+      player.targetY = ty;
 
       // 1. 食指 Pointing -> 火球
       if (indexUp && !middleUp && !ringUp && !pinkyUp) {
