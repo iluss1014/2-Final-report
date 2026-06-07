@@ -4,10 +4,14 @@ const Gesture = {
       let landmarks = hands[0].keypoints;
 
       // 指尖與指節判定 (ml5 v1 索引)
+      let thumbUp = landmarks[4].y < landmarks[3].y;
       let indexUp = landmarks[8].y < landmarks[6].y;
       let middleUp = landmarks[12].y < landmarks[10].y;
       let ringUp = landmarks[16].y < landmarks[14].y;
       let pinkyUp = landmarks[20].y < landmarks[18].y;
+
+      // 比讚判定：只有拇指伸直
+      player.isThumbsUp = thumbUp && !indexUp && !middleUp && !ringUp && !pinkyUp;
 
       // 目標座標映射
       let rawTx = map(landmarks[8].x, 0, CONFIG.VIDEO_W, 0, width);

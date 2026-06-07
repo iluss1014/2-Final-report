@@ -6,6 +6,7 @@ class Player {
     this.targetX = width / 2;
     this.targetY = height / 2;
     this.lockedTarget = null; // 新增：目前鎖定的目標
+    this.isThumbsUp = false;  // 新增：比讚狀態
     this.reset();
   }
 
@@ -16,6 +17,7 @@ class Player {
     this.targetX = width / 2;
     this.targetY = height / 2;
     this.lockedTarget = null;
+    this.isThumbsUp = false;
     this.lastKillTime = 0;
     this.lightningCooldown = 0;
   }

@@ -101,19 +101,31 @@ const UI = {
     textSize(32);
     
     let msg = "";
-    if (step === 0) msg = "第一步：移動食指，將準心移到畫面中央";
-    else if (step === 1) msg = "第二步：伸出食指 (其餘收起)，發射火球";
-    else if (step === 2) msg = "第三步：比出 YA 手勢，發射冰箭";
-    else if (step === 3) msg = "最後：張開五指，釋放全螢幕雷電！";
+    let desc = "";
+    if (step === 0) {
+      msg = "【準心瞄準】";
+      desc = "移動食指控制綠色準心。靠近敵人會自動鎖定。";
+    } else if (step === 1) {
+      msg = "【火球術 (5MP)】";
+      desc = "手勢：伸出食指 (其餘收起)。\n效果：單體攻擊，具備自動導引追蹤功能。";
+    } else if (step === 2) {
+      msg = "【冰箭術 (8MP)】";
+      desc = "手勢：比出 YA 手勢。\n效果：穿透攻擊。對火系怪造成雙倍傷害。";
+    } else if (step === 3) {
+      msg = "【雷電術 (30MP)】";
+      desc = "手勢：張開五指。\n效果：全螢幕打擊。對暗影幽靈造成三倍傷害。";
+    }
 
-    text("--- 魔法學徒訓練 ---", width/2, height/2 - 100);
-    textSize(24);
+    text("--- 魔法學徒訓練 ---", width/2, height/2 - 150);
+    fill(255, 255, 0);
     text(msg, width/2, height/2);
+    fill(255);
+    textSize(22);
+    text(desc, width/2, height/2 + 60);
     
-    // 提示手勢圖示 (文字版)
-    textSize(18);
-    fill(200);
-    text("練習完畢後將自動開始第一關", width/2, height - 50);
+    fill(0, 255, 0);
+    textSize(24);
+    text("練習完畢後，請「比讚 (豎起大拇指)」進入下一步", width/2, height - 80);
   },
 
   drawLevelUp: (level) => {

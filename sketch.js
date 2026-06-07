@@ -22,6 +22,7 @@ let gameStartTime;
 let currentLevel = 1;
 let tutorialStep = 0; // 0: 瞄準, 1: 火球, 2: 冰箭, 3: 雷電
 let lastLevelUpTime = 0;
+let lastThumbsUpState = false;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -69,18 +70,29 @@ function runTutorial() {
   player.mp = 100; // 教學模式無限 MP
   Gesture.analyze(hands, player, spells);
   UI.drawCrosshair(player);
+
+  // 在教學關中固定生成 4 個不會動的敵人
+  if (enemies.length < 4) {
+    let positions = [
+      {x: width * 0.2, y: height * 0.3}, {x: width * 0.8, y: height * 0.3},
+      {x: width * 0.2, y: height * 0.7}, {x: width * 0.8, y: height * 0.7}
+    ];
+    let pos = positions[enemies.length];
+    let e = new Enemy();
+    e.x = pos.x; e.y = pos.y;
+    e.speed = 0; // 教學模式怪物不動
+    enemies.push(e);
+  }
+
+  handleEntities(false); // 執行繪製與碰撞，不更新怪物位移
   UI.drawTutorial(tutorialStep, player);
 
-  // 教學進度判定
-  if (tutorialStep === 0) { // 練習瞄準
-    if (dist(player.targetX, player.targetY, width/2, height/2) < 50) tutorialStep++;
-  } else if (tutorialStep === 1) { // 練習火球
-    if (spells.some(s => s.type === 'FIRE')) { spells = []; tutorialStep++; }
-  } else if (tutorialStep === 2) { // 練習冰箭
-    if (spells.some(s => s.type === 'ICE')) { spells = []; tutorialStep++; }
-  } else if (tutorialStep === 3) { // 練習雷電
-    if (player.lightningCooldown > 0) tutorialStep++;
+  // 檢查是否「比讚」跳過目前的教學步驟
+  if (player.isThumbsUp && !lastThumbsUpState) {
+    tutorialStep++;
+    enemies = []; // 換步時刷新敵人
   }
+  lastThumbsUpState = player.isThumbsUp;
 
   if (tutorialStep > 3) {
     gameState = 'LEVEL_UP';
@@ -113,7 +125,7 @@ function runGame() {
   // 繪製瞄準準心 (傳入 player 物件以判斷 MP 狀態)
   UI.drawCrosshair(player);
 
-  // 關卡時間判定 (每關 20 秒)
+  // 波次/關卡時間判定 (每波 20 秒)
   let timeInLevel = millis() - gameStartTime;
   if (gameState === 'PLAYING' && timeInLevel > 20000) {
     currentLevel++;
@@ -125,7 +137,6 @@ function runGame() {
 
   // 怪物生成 (一般模式)
   if (gameState === 'PLAYING' && frameCount % 60 === 0) {
-    // 難度隨關卡提升
     let difficulty = 1.0 + (currentLevel - 1) * 0.3;
     enemies.push(new Enemy(difficulty));
   }
@@ -140,9 +151,14 @@ function runGame() {
     }
   }
 
-  // 怪物邏輯
+  handleEntities(true);
+  UI.drawHUD(player, score, currentLevel);
+}
+
+// 將實體處理邏輯獨立出來，讓教學模式也能共享碰撞判定
+function handleEntities(doUpdate) {
   for (let i = enemies.length - 1; i >= 0; i--) {
-    enemies[i].update(player);
+    if (doUpdate) enemies[i].update(player);
     enemies[i].display();
     if (enemies[i].checkCollision(player)) {
       player.takeDamage(10);
@@ -152,7 +168,6 @@ function runGame() {
     }
   }
 
-  // 法術與碰撞
   for (let i = spells.length - 1; i >= 0; i--) {
     spells[i].update();
     spells[i].display();
@@ -160,14 +175,11 @@ function runGame() {
     if (!spells[i].active || spells[i].isOffScreen()) spells.splice(i, 1);
   }
 
-  // 特效
   for (let i = particles.length - 1; i >= 0; i--) {
     particles[i].update();
     particles[i].display();
     if (particles[i].isFinished()) particles.splice(i, 1);
   }
-
-  UI.drawHUD(player, score, currentLevel);
 }
 
 function mousePressed() {
