@@ -71,15 +71,11 @@ function runTutorial() {
   Gesture.analyze(hands, player, spells);
   UI.drawCrosshair(player);
 
-  // 在教學關中固定生成 4 個不會動的敵人
+  // 在教學關中隨機生成 4 個不會動的敵人
   if (enemies.length < 4) {
-    let positions = [
-      {x: width * 0.2, y: height * 0.3}, {x: width * 0.8, y: height * 0.3},
-      {x: width * 0.2, y: height * 0.7}, {x: width * 0.8, y: height * 0.7}
-    ];
-    let pos = positions[enemies.length];
     let e = new Enemy();
-    e.x = pos.x; e.y = pos.y;
+    e.x = random(100, width - 100);
+    e.y = random(100, height - 100);
     e.speed = 0; // 教學模式怪物不動
     enemies.push(e);
   }
