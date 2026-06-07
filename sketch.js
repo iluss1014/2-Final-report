@@ -23,6 +23,7 @@ let currentLevel = 1;
 let tutorialStep = 0; // 0: 瞄準, 1: 火球, 2: 冰箭, 3: 雷電
 let lastLevelUpTime = 0;
 let lastThumbsUpState = false;
+let tutorialHint = ""; // 教學模式的動態提示文字
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -47,7 +48,7 @@ function draw() {
   
   // 繪製半透明攝影機背景
   push();
-  tint(255, 40);
+  tint(255, 120); // 將透明度從 40 提高到 120，讓背景畫面更明亮清晰
   let s = max(width / video.width, height / video.height);
   image(video, (width - video.width * s) / 2, (height - video.height * s) / 2, video.width * s, video.height * s);
   pop();

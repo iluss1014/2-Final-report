@@ -2,6 +2,7 @@ const Gesture = {
   analyze: (hands, player, spells) => {
     if (hands.length > 0) {
       let landmarks = hands[0].keypoints;
+      if (gameState === 'TUTORIAL') tutorialHint = ""; // 偵測到手時預設清除提示
 
       // 指尖與指節判定 (ml5 v1 索引)
       let thumbUp = landmarks[4].y < landmarks[3].y;
@@ -37,6 +38,19 @@ const Gesture = {
       player.lockedTarget = closest;
       player.targetX = tx;
       player.targetY = ty;
+
+      // --- 教學模式動態提示邏輯 ---
+      if (gameState === 'TUTORIAL') {
+        if (tutorialStep === 1) { // 火球教學
+          if (!indexUp) tutorialHint = "需伸出「食指」來施放火球";
+          else if (middleUp || ringUp || pinkyUp) tutorialHint = "提示：請收起食指以外的手指";
+        } else if (tutorialStep === 2) { // 冰箭教學
+          if (!indexUp || !middleUp) tutorialHint = "請伸出「食指與中指」比出 YA";
+          else if (ringUp || pinkyUp) tutorialHint = "提示：請收起無名指與小指";
+        } else if (tutorialStep === 3) { // 雷電教學
+          if (!indexUp || !middleUp || !ringUp || !pinkyUp) tutorialHint = "提示：請張開整個手掌";
+        }
+      }
 
       // 1. 食指 Pointing -> 火球
       if (indexUp && !middleUp && !ringUp && !pinkyUp) {

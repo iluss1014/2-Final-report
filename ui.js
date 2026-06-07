@@ -122,6 +122,13 @@ const UI = {
     fill(255);
     textSize(22);
     text(desc, width/2, height/2 + 60);
+
+    // 繪製動態提示文字
+    if (tutorialHint !== "") {
+      fill(255, 100, 100); // 使用顯眼的淺紅色
+      textSize(26);
+      text(tutorialHint, width/2, height/2 + 140);
+    }
     
     fill(0, 255, 0);
     textSize(24);
