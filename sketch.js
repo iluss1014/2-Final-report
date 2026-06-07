@@ -19,6 +19,9 @@ let boss = null;
 let score = 0;
 let maxCombo = 0;
 let gameStartTime;
+let currentLevel = 1;
+let tutorialStep = 0; // 0: 瞄準, 1: 火球, 2: 冰箭, 3: 雷電
+let lastLevelUpTime = 0;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -50,10 +53,53 @@ function draw() {
 
   if (gameState === 'START') {
     UI.drawStartScreen();
+  } else if (gameState === 'TUTORIAL') {
+    runTutorial();
+  } else if (gameState === 'LEVEL_UP') {
+    runLevelUp();
   } else if (gameState === 'PLAYING' || gameState === 'BOSS') {
     runGame();
   } else if (gameState === 'GAMEOVER') {
     UI.drawGameOver(score, maxCombo);
+  }
+}
+
+function runTutorial() {
+  player.update();
+  player.mp = 100; // 教學模式無限 MP
+  Gesture.analyze(hands, player, spells);
+  UI.drawCrosshair(player);
+  UI.drawTutorial(tutorialStep, player);
+
+  // 教學進度判定
+  if (tutorialStep === 0) { // 練習瞄準
+    if (dist(player.targetX, player.targetY, width/2, height/2) < 50) tutorialStep++;
+  } else if (tutorialStep === 1) { // 練習火球
+    if (spells.some(s => s.type === 'FIRE')) { spells = []; tutorialStep++; }
+  } else if (tutorialStep === 2) { // 練習冰箭
+    if (spells.some(s => s.type === 'ICE')) { spells = []; tutorialStep++; }
+  } else if (tutorialStep === 3) { // 練習雷電
+    if (player.lightningCooldown > 0) tutorialStep++;
+  }
+
+  if (tutorialStep > 3) {
+    gameState = 'LEVEL_UP';
+    currentLevel = 1;
+    lastLevelUpTime = millis();
+  }
+}
+
+function runLevelUp() {
+  UI.drawLevelUp(currentLevel);
+  // 顯示 2 秒後開始關卡
+  if (millis() - lastLevelUpTime > 2000) {
+    if (currentLevel > 3) {
+      gameState = 'BOSS';
+      boss = new Boss();
+    } else {
+      gameState = 'PLAYING';
+    }
+    gameStartTime = millis();
   }
 }
 
@@ -67,17 +113,20 @@ function runGame() {
   // 繪製瞄準準心 (傳入 player 物件以判斷 MP 狀態)
   UI.drawCrosshair(player);
 
-  // Boss 出現判定
-  if (gameState === 'PLAYING' && millis() - gameStartTime > CONFIG.BOSS_TIME) {
-    gameState = 'BOSS';
-    boss = new Boss();
+  // 關卡時間判定 (每關 20 秒)
+  let timeInLevel = millis() - gameStartTime;
+  if (gameState === 'PLAYING' && timeInLevel > 20000) {
+    currentLevel++;
+    gameState = 'LEVEL_UP';
+    lastLevelUpTime = millis();
+    enemies = []; // 清空當前怪物
+    spells = [];
   }
 
   // 怪物生成 (一般模式)
   if (gameState === 'PLAYING' && frameCount % 60 === 0) {
-    let timeElapsed = millis() - gameStartTime;
-    // 難度系數：每過 30 秒增加 0.2 倍速度，基礎為 1.0
-    let difficulty = 1.0 + (timeElapsed / 30000) * 0.2;
+    // 難度隨關卡提升
+    let difficulty = 1.0 + (currentLevel - 1) * 0.3;
     enemies.push(new Enemy(difficulty));
   }
 
@@ -118,13 +167,13 @@ function runGame() {
     if (particles[i].isFinished()) particles.splice(i, 1);
   }
 
-  UI.drawHUD(player, score);
+  UI.drawHUD(player, score, currentLevel);
 }
 
 function mousePressed() {
   if (gameState === 'START') {
-    gameState = 'PLAYING';
-    gameStartTime = millis();
+    gameState = 'TUTORIAL';
+    tutorialStep = 0;
     score = 0;
     maxCombo = 0;
     player.reset();

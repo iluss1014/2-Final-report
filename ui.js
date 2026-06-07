@@ -1,5 +1,5 @@
 const UI = {
-  drawHUD: (player, score) => {
+  drawHUD: (player, score, level) => {
     // HP
     fill(50);
     rect(20, 20, 200, 20);
@@ -17,6 +17,9 @@ const UI = {
     textSize(24);
     textAlign(LEFT);
     text(`Score: ${score}`, 20, 100);
+    
+    fill(255, 200, 0);
+    text(`Level: ${level}`, 20, 130);
     
     if (player.combo > 1) {
       fill(255, 255, 0);
@@ -88,6 +91,42 @@ const UI = {
     // 繪製準心十字線
     line(-25, 0, 25, 0);
     line(0, -25, 0, 25);
+    pop();
+  },
+
+  drawTutorial: (step, player) => {
+    background(0, 150);
+    fill(255);
+    textAlign(CENTER);
+    textSize(32);
+    
+    let msg = "";
+    if (step === 0) msg = "第一步：移動食指，將準心移到畫面中央";
+    else if (step === 1) msg = "第二步：伸出食指 (其餘收起)，發射火球";
+    else if (step === 2) msg = "第三步：比出 YA 手勢，發射冰箭";
+    else if (step === 3) msg = "最後：張開五指，釋放全螢幕雷電！";
+
+    text("--- 魔法學徒訓練 ---", width/2, height/2 - 100);
+    textSize(24);
+    text(msg, width/2, height/2);
+    
+    // 提示手勢圖示 (文字版)
+    textSize(18);
+    fill(200);
+    text("練習完畢後將自動開始第一關", width/2, height - 50);
+  },
+
+  drawLevelUp: (level) => {
+    push();
+    fill(255, 255, 0);
+    textAlign(CENTER);
+    textSize(80);
+    let displayLevel = level > 3 ? "FINAL BOSS" : "LEVEL " + level;
+    text(displayLevel, width/2, height/2);
+    
+    textSize(30);
+    fill(255);
+    text("Prepare for Battle...", width/2, height/2 + 60);
     pop();
   }
 };
