@@ -40,25 +40,33 @@ const Gesture = {
 
       // 1. 食指 Pointing -> 火球
       if (indexUp && !middleUp && !ringUp && !pinkyUp) {
-        if (player.mp >= 5 && frameCount % 30 === 0) {
-          // 發射火球時傳入目前鎖定的目標
-          spells.push(new Spell(player.x, player.y, tx, ty, 'FIRE', player.lockedTarget));
-          player.mp -= 5;
+        // 只在非教學模式，或是教學步驟為 1 (火球) 時允許觸發
+        if (gameState !== 'TUTORIAL' || tutorialStep === 1) {
+          if (player.mp >= 5 && frameCount % 30 === 0) {
+            spells.push(new Spell(player.x, player.y, tx, ty, 'FIRE', player.lockedTarget));
+            player.mp -= 5;
+          }
         }
       }
       // 2. YA Peace -> 冰箭
       else if (indexUp && middleUp && !ringUp && !pinkyUp) {
-        if (player.mp >= 8 && frameCount % 40 === 0) {
-          spells.push(new Spell(player.x, player.y, tx, ty, 'ICE'));
-          player.mp -= 8;
+        // 只在非教學模式，或是教學步驟為 2 (冰箭) 時允許觸發
+        if (gameState !== 'TUTORIAL' || tutorialStep === 2) {
+          if (player.mp >= 8 && frameCount % 40 === 0) {
+            spells.push(new Spell(player.x, player.y, tx, ty, 'ICE'));
+            player.mp -= 8;
+          }
         }
       }
       // 3. 張開五指 Open Palm -> 雷電
       else if (indexUp && middleUp && ringUp && pinkyUp) {
-        if (player.mp >= 30 && player.lightningCooldown === 0) {
-          Gesture.castLightning(player);
-          player.mp -= 30;
-          player.lightningCooldown = 300; // 5秒冷卻
+        // 只在非教學模式，或是教學步驟為 3 (雷電) 時允許觸發
+        if (gameState !== 'TUTORIAL' || tutorialStep === 3) {
+          if (player.mp >= 30 && player.lightningCooldown === 0) {
+            Gesture.castLightning(player);
+            player.mp -= 30;
+            player.lightningCooldown = 300; // 5秒冷卻
+          }
         }
       }
     }
