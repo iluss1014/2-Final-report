@@ -23,6 +23,7 @@ let currentLevel = 1;
 let tutorialStep = 0; // 0: 瞄準, 1: 火球, 2: 冰箭, 3: 雷電
 let lastLevelUpTime = 0;
 let lastThumbsUpState = false;
+let gameWin = false; // 新增：判斷是否勝利
 let tutorialHint = ""; // 教學模式的動態提示文字
 
 function setup() {
@@ -65,7 +66,7 @@ function draw() {
   } else if (gameState === 'PLAYING' || gameState === 'BOSS') {
     runGame();
   } else if (gameState === 'GAMEOVER') {
-    UI.drawGameOver(score, maxCombo);
+    UI.drawGameOver(score, maxCombo, gameWin); // 傳入勝利旗標
   }
 }
 
@@ -147,6 +148,7 @@ function runGame() {
     boss.display();
     if (boss.isDead()) {
       score += 500;
+      gameWin = true; // 擊敗 Boss，設定為勝利
       gameState = 'GAMEOVER';
     }
   }
@@ -188,6 +190,7 @@ function mousePressed() {
     tutorialStep = 0;
     score = 0;
     maxCombo = 0;
+    gameWin = false; // 重置勝利狀態
     player.reset();
     enemies = [];
     spells = [];

@@ -5,29 +5,33 @@ const Gesture = {
       if (gameState === 'TUTORIAL') tutorialHint = ""; // 偵測到手時預設清除提示
 
       // 指尖與指節判定 (ml5 v1 索引)
-      let thumbUp = landmarks[4].y < landmarks[3].y;
+      // 優化：比較拇指尖(4)與拇指根部(2)以及食指根部(5)
+      // 確保大拇指是真正豎起，而非握拳時橫跨在指縫間
+      let thumbUp = landmarks[4].y < landmarks[2].y;
+      let thumbExtended = landmarks[4].y < landmarks[5].y;
+
       let indexUp = landmarks[8].y < landmarks[6].y;
       let middleUp = landmarks[12].y < landmarks[10].y;
       let ringUp = landmarks[16].y < landmarks[14].y;
       let pinkyUp = landmarks[20].y < landmarks[18].y;
 
-      // 比讚判定：只有拇指伸直
-      player.isThumbsUp = thumbUp && !indexUp && !middleUp && !ringUp && !pinkyUp;
+      // 比讚判定：拇指必須明顯高於根部與食指根部，且其他四指收起
+      player.isThumbsUp = thumbUp && thumbExtended && !indexUp && !middleUp && !ringUp && !pinkyUp;
 
       // 目標座標映射
       let rawTx = map(landmarks[8].x, 0, CONFIG.VIDEO_W, 0, width);
       let rawTy = map(landmarks[8].y, 0, CONFIG.VIDEO_H, 0, height);
 
-      // --- 優化 3：動量預測 (Extrapolation) ---
-      // 1. 先計算真正的原始位移速度
+      // --- 優化：動量預測 (Extrapolation) 修正版 ---
+      // 1. 先計算原始位移速度
       let vx = rawTx - player.prevRawX;
       let vy = rawTy - player.prevRawY;
 
-      // 2. 關鍵修正：儲存真正的原始座標，供下一幀計算速度使用
+      // 2. 關鍵修正：將「未預測」的原始座標存入紀錄，避免下一幀速度無限疊加
       player.prevRawX = rawTx;
       player.prevRawY = rawTy;
 
-      // 3. 套用預測補償到當前要處理的座標上 (稍微調低倍率至 1.5 增加穩定性)
+      // 3. 套用補償係數 (1.5倍是穩定且跟手的數值)
       rawTx += vx * 1.5;
       rawTy += vy * 1.5;
 

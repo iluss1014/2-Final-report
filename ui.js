@@ -39,13 +39,21 @@ const UI = {
     text("操作說明：\n1. 食指：火球 (5MP)\n2. YA手勢：冰箭 (8MP)\n3. 五指張開：雷電 (30MP)\n\n點擊畫面開始遊戲", width/2, height/2 + 20);
   },
 
-  drawGameOver: (finalScore, finalCombo) => {
+  drawGameOver: (finalScore, finalCombo, isWin) => {
     background(0, 220);
-    fill(255);
     textAlign(CENTER);
     textSize(80);
-    fill(255, 50, 50);
-    text("GAME OVER", width/2, height/2 - 50);
+
+    if (isWin) {
+      // 勝利：顯示金黃色 Victory
+      fill(255, 215, 0);
+      text("VICTORY!", width/2, height/2 - 50);
+    } else {
+      // 失敗：顯示紅色 Game Over
+      fill(255, 50, 50);
+      text("GAME OVER", width/2, height/2 - 50);
+    }
+
     fill(255);
     textSize(30);
     text(`Final Score: ${finalScore}`, width/2, height/2 + 30);

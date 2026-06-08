@@ -65,6 +65,7 @@ class Player {
     this.hp -= amt;
     if (this.hp <= 0) {
       this.hp = 0;
+      gameWin = false; // HP 歸零，設定為失敗
       gameState = 'GAMEOVER';
     }
   }
