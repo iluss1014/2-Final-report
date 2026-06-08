@@ -5,6 +5,10 @@ class Player {
     this.r = 50;
     this.targetX = width / 2;
     this.targetY = height / 2;
+    this.smoothX = width / 2; // 用於渲染的平滑座標
+    this.smoothY = height / 2;
+    this.prevRawX = width / 2; // 用於計算速度
+    this.prevRawY = height / 2;
     this.lockedTarget = null; // 新增：目前鎖定的目標
     this.isThumbsUp = false;  // 新增：比讚狀態
     this.reset();
@@ -16,6 +20,8 @@ class Player {
     this.combo = 0;
     this.targetX = width / 2;
     this.targetY = height / 2;
+    this.smoothX = width / 2;
+    this.smoothY = height / 2;
     this.lockedTarget = null;
     this.isThumbsUp = false;
     this.lastKillTime = 0;
@@ -23,6 +29,10 @@ class Player {
   }
 
   update() {
+    // 優化 2：每幀執行線性插值 (Lerp)，讓準心移動如絲般順滑
+    this.smoothX = lerp(this.smoothX, this.targetX, 0.35);
+    this.smoothY = lerp(this.smoothY, this.targetY, 0.35);
+
     // MP 自然恢復
     this.mp = min(100, this.mp + CONFIG.MP_REGEN);
     

@@ -18,6 +18,15 @@ const Gesture = {
       let rawTx = map(landmarks[8].x, 0, CONFIG.VIDEO_W, 0, width);
       let rawTy = map(landmarks[8].y, 0, CONFIG.VIDEO_H, 0, height);
 
+      // --- 優化 3：動量預測 (Extrapolation) ---
+      // 計算移動速度並往該方向補償 2.5 倍的距離，解決 AI 處理的延遲感
+      let vx = rawTx - player.prevRawX;
+      let vy = rawTy - player.prevRawY;
+      rawTx += vx * 2.5;
+      rawTy += vy * 2.5;
+      player.prevRawX = rawTx;
+      player.prevRawY = rawTy;
+
       // --- 自動鎖定邏輯 ---
       let closest = null;
       let minDist = 80; // 鎖定靈敏度（半徑 80 像素內自動吸附）

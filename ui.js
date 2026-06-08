@@ -65,8 +65,8 @@ const UI = {
   },
 
   drawCrosshair: (player) => {
-    let x = player.targetX;
-    let y = player.targetY;
+    let x = player.smoothX; // 使用平滑且預測過的座標
+    let y = player.smoothY;
 
     push();
     noFill();

@@ -28,6 +28,9 @@ let tutorialHint = ""; // 教學模式的動態提示文字
 function setup() {
   createCanvas(windowWidth, windowHeight);
   
+  // 優化 1：針對高解析度螢幕優化，減少顯示負擔
+  pixelDensity(1);
+
   // 初始化攝影機
   video = createCapture(VIDEO, { flipped: true });
   video.size(CONFIG.VIDEO_W, CONFIG.VIDEO_H);
