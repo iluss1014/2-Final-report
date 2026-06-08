@@ -34,9 +34,25 @@ const UI = {
     fill(255);
     textAlign(CENTER);
     textSize(60);
-    text("Wizard Gesture Battle", width/2, height/2 - 100);
+    text("Wizard Gesture Battle", width/2, height/2 - 160);
+
+    fill(255, 200, 0);
+    textSize(26);
+    text("— 遊戲目標 —", width/2, height/2 - 90);
+    fill(255);
     textSize(20);
-    text("操作說明：\n1. 食指：火球 (5MP)\n2. YA手勢：冰箭 (8MP)\n3. 五指張開：雷電 (30MP)\n\n點擊畫面開始遊戲", width/2, height/2 + 20);
+    text("身為傳奇魔法師，你必須利用精準的手勢魔法，\n擊退不斷襲來的史萊姆與幽靈，守護領地並擊敗遠古魔龍！", width/2, height/2 - 50);
+
+    fill(255, 200, 0);
+    textSize(26);
+    text("— 操作說明 —", width/2, height/2 + 30);
+    fill(255);
+    textSize(20);
+    text("1. 食指：火球 (單體)  |  2. YA手勢：冰箭 (穿透)\n3. 五指張開：雷電 (全屏打擊)", width/2, height/2 + 70);
+
+    fill(0, 255, 0);
+    textSize(24);
+    text("點擊畫面開始教學訓練", width/2, height/2 + 160);
   },
 
   drawGameOver: (finalScore, finalCombo, isWin) => {
